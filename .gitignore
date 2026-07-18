@@ -37,3 +37,7 @@ roadmap-result.png
 
 # CI workflow (needs `workflow` OAuth scope to push; add via GitHub UI or gh auth refresh -s workflow)
 .github/
+
+# User database (created at runtime)
+data/users.db
+*.db

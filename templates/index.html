@@ -27,9 +27,21 @@
         <a href="#build">Plan journey</a>
         <a href="#roadmap-section" id="nav-roadmap" class="is-hidden">Your route</a>
       </nav>
-      <button id="theme-toggle" class="toggle" aria-label="Switch to night service (dark mode)" aria-pressed="false">
-        <span class="toggle__dot"></span><span class="toggle__label">Night</span>
-      </button>
+      <div class="masthead__auth">
+        {% if current_user %}
+          <span class="masthead__user">Hi, <b>{{ current_user.name }}</b></span>
+          <form method="post" action="{{ url_for('logout') }}" style="margin:0">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+            <button type="submit" class="linkbtn">Log out</button>
+          </form>
+        {% else %}
+          <a class="linkbtn" href="{{ url_for('login') }}">Log in</a>
+          <a class="nav-cta" href="{{ url_for('register') }}">Register</a>
+        {% endif %}
+        <button id="theme-toggle" class="toggle" aria-label="Switch to night service (dark mode)" aria-pressed="false">
+          <span class="toggle__dot"></span><span class="toggle__label">Night</span>
+        </button>
+      </div>
     </div>
   </header>
 

@@ -116,11 +116,28 @@ The app is production-ready with **gunicorn** and a **Procfile** — deploy free
 gunicorn app:app   # serves the same app with debug off
 ```
 
-## 🔌 API
+## 🔐 Accounts
+
+Register / login is built in — SQLite user store, salted password hashing
+(`werkzeug.security`), signed session cookies (`HttpOnly`, `SameSite=Lax`),
+CSRF-protected forms, and open-redirect-safe `next` handling. On-theme pages:
+**"Get a Travelcard"** (register) and **"Tap in"** (login).
+
+```bash
+# Set a real secret in production (dev has a stable fallback):
+export SECRET_KEY="$(python -c 'import secrets; print(secrets.token_hex(32))')"
+export SESSION_COOKIE_SECURE=1   # when served over HTTPS
+```
+
+The user database (`data/users.db`) is created automatically on first run and is git-ignored.
+
+## 🔌 API &amp; routes
 
 | Method | Endpoint        | Description |
 | ------ | --------------- | ----------- |
 | `GET`  | `/`             | The web app |
+| `GET`/`POST` | `/register` · `/login` | Account pages |
+| `POST` | `/logout`       | End the session (CSRF-protected) |
 | `GET`  | `/api/config`   | Available skills and careers (the frontend builds its UI from this) |
 | `POST` | `/api/roadmap`  | Body `{ "career": "data-scientist", "skills": { "programming": 40, ... } }` → personalized route |
 | `GET`  | `/healthz`      | Health check |

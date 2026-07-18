@@ -21,13 +21,28 @@ from __future__ import annotations
 
 import json
 import os
+import re
+import secrets
+import sqlite3
 from pathlib import Path
 from typing import Any
 
-from flask import Flask, jsonify, render_template, request
+from flask import (
+    Flask,
+    jsonify,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for,
+)
+from werkzeug.security import check_password_hash, generate_password_hash
 
 BASE_DIR = Path(__file__).resolve().parent
 DATA_FILE = BASE_DIR / "data" / "roadmap.json"
+DB_FILE = BASE_DIR / "data" / "users.db"
+EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+MIN_PASSWORD_LEN = 8
 
 # Tunable engine constants (named rather than inlined for readability).
 FULL_TIME_HOURS_PER_WEEK = 40
@@ -36,6 +51,74 @@ FOUNDATIONS_RATIO = 0.5      # score below threshold * this => "Foundations"
 DEFAULT_THRESHOLD = 60       # used when a module omits its own threshold
 
 app = Flask(__name__)
+# Session signing key. Set SECRET_KEY in production; a dev fallback keeps local
+# sessions stable across restarts. SESSION_COOKIE_SECURE=1 in prod (HTTPS).
+app.secret_key = os.environ.get("SECRET_KEY", "dev-insecure-secret-change-in-production")
+app.config.update(
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE="Lax",
+    SESSION_COOKIE_SECURE=os.environ.get("SESSION_COOKIE_SECURE") == "1",
+)
+
+
+# --------------------------------------------------------------------------- #
+# Auth: SQLite user store, hashed passwords, session login, CSRF
+# --------------------------------------------------------------------------- #
+def get_db() -> sqlite3.Connection:
+    conn = sqlite3.connect(DB_FILE)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+
+def init_db() -> None:
+    DB_FILE.parent.mkdir(parents=True, exist_ok=True)
+    with get_db() as db:
+        db.execute(
+            """
+            CREATE TABLE IF NOT EXISTS users (
+                id            INTEGER PRIMARY KEY AUTOINCREMENT,
+                email         TEXT UNIQUE NOT NULL,
+                name          TEXT NOT NULL,
+                password_hash TEXT NOT NULL,
+                created_at    TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+            )
+            """
+        )
+
+
+def current_user() -> dict | None:
+    uid = session.get("user_id")
+    if not uid:
+        return None
+    with get_db() as db:
+        row = db.execute("SELECT id, email, name FROM users WHERE id = ?", (uid,)).fetchone()
+    return dict(row) if row else None
+
+
+def get_csrf_token() -> str:
+    token = session.get("csrf_token")
+    if not token:
+        token = secrets.token_hex(16)
+        session["csrf_token"] = token
+    return token
+
+
+def _csrf_ok() -> bool:
+    sent = request.form.get("csrf_token", "")
+    stored = session.get("csrf_token", "")
+    return bool(stored) and secrets.compare_digest(sent, stored)
+
+
+def _safe_next(target: str | None) -> str:
+    """Only allow local relative redirects (prevents open-redirect)."""
+    if target and target.startswith("/") and not target.startswith("//"):
+        return target
+    return url_for("index")
+
+
+@app.context_processor
+def inject_globals() -> dict:
+    return {"current_user": current_user(), "csrf_token": get_csrf_token()}
 
 
 def load_curriculum() -> dict[str, Any]:
@@ -47,6 +130,9 @@ def load_curriculum() -> dict[str, Any]:
     with DATA_FILE.open("r", encoding="utf-8") as fh:
         return json.load(fh)
 
+
+# Initialize the user database at import so the app is ready under gunicorn too.
+init_db()
 
 # Load once at import so lookups (skills, careers) are cheap and validated early.
 CURRICULUM: dict[str, Any] = load_curriculum()
@@ -288,6 +374,74 @@ def api_roadmap():
 @app.route("/healthz")
 def healthz():
     return jsonify({"status": "ok", "careers": len(CAREERS_BY_ID), "skills": len(SKILLS_BY_ID)})
+
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if current_user():
+        return redirect(url_for("index"))
+    if request.method == "POST":
+        name = (request.form.get("name") or "").strip()
+        email = (request.form.get("email") or "").strip().lower()
+        password = request.form.get("password") or ""
+        confirm = request.form.get("confirm") or ""
+        form = {"name": name, "email": email}
+
+        if not _csrf_ok():
+            return render_template("register.html", error="Your session expired — please try again.", **form), 400
+        if not name or not EMAIL_RE.match(email) or len(password) < MIN_PASSWORD_LEN:
+            return render_template(
+                "register.html",
+                error=f"Enter your name, a valid email, and a password of at least {MIN_PASSWORD_LEN} characters.",
+                **form,
+            ), 400
+        if password != confirm:
+            return render_template("register.html", error="Those passwords don't match.", **form), 400
+
+        try:
+            with get_db() as db:
+                cur = db.execute(
+                    "INSERT INTO users (email, name, password_hash) VALUES (?, ?, ?)",
+                    (email, name, generate_password_hash(password)),
+                )
+                uid = cur.lastrowid
+        except sqlite3.IntegrityError:
+            return render_template("register.html", error="That email is already registered — try logging in.", **form), 400
+
+        session.clear()
+        session["user_id"] = uid
+        return redirect(_safe_next(request.args.get("next")))
+
+    return render_template("register.html")
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if current_user():
+        return redirect(url_for("index"))
+    if request.method == "POST":
+        email = (request.form.get("email") or "").strip().lower()
+        password = request.form.get("password") or ""
+
+        if not _csrf_ok():
+            return render_template("login.html", error="Your session expired — please try again.", email=email), 400
+
+        with get_db() as db:
+            row = db.execute("SELECT * FROM users WHERE email = ?", (email,)).fetchone()
+        if row and check_password_hash(row["password_hash"], password):
+            session.clear()
+            session["user_id"] = row["id"]
+            return redirect(_safe_next(request.args.get("next")))
+        return render_template("login.html", error="Wrong email or password.", email=email), 401
+
+    return render_template("login.html")
+
+
+@app.route("/logout", methods=["POST"])
+def logout():
+    if _csrf_ok():
+        session.clear()
+    return redirect(url_for("index"))
 
 
 @app.after_request
