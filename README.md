@@ -131,6 +131,10 @@ export SESSION_COOKIE_SECURE=1   # when served over HTTPS
 
 The user database (`data/users.db`) is created automatically on first run and is git-ignored.
 
+**Progress follows your account.** When you're logged in, completed stops are saved server-side
+(per career route) and restored on any device — guests still get browser-local (`localStorage`)
+tracking. Endpoints: `GET /api/progress?career=<id>` and `POST /api/progress` (CSRF-protected).
+
 ## 🔌 API &amp; routes
 
 | Method | Endpoint        | Description |

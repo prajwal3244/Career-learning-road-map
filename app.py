@@ -84,6 +84,18 @@ def init_db() -> None:
             )
             """
         )
+        db.execute(
+            """
+            CREATE TABLE IF NOT EXISTS progress (
+                user_id    INTEGER NOT NULL,
+                career_id  TEXT NOT NULL,
+                done_keys  TEXT NOT NULL DEFAULT '[]',
+                updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (user_id, career_id),
+                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+            )
+            """
+        )
 
 
 def current_user() -> dict | None:
@@ -369,6 +381,59 @@ def api_roadmap():
 
     status = 400 if "error" in result else 200
     return jsonify(result), status
+
+
+@app.route("/api/progress", methods=["GET"])
+def api_get_progress():
+    """Return the logged-in user's completed stops for a given career route."""
+    user = current_user()
+    if not user:
+        return jsonify({"authed": False, "done": []})
+    career = request.args.get("career", "")
+    with get_db() as db:
+        row = db.execute(
+            "SELECT done_keys FROM progress WHERE user_id = ? AND career_id = ?",
+            (user["id"], career),
+        ).fetchone()
+    try:
+        done = json.loads(row["done_keys"]) if row else []
+    except (ValueError, TypeError):
+        done = []
+    return jsonify({"authed": True, "done": done if isinstance(done, list) else []})
+
+
+@app.route("/api/progress", methods=["POST"])
+def api_save_progress():
+    """Persist the logged-in user's completed stops (CSRF-protected, per career)."""
+    user = current_user()
+    if not user:
+        return jsonify({"error": "Not logged in."}), 401
+
+    sent = request.headers.get("X-CSRFToken", "")
+    stored = session.get("csrf_token", "")
+    if not (stored and secrets.compare_digest(sent, stored)):
+        return jsonify({"error": "Invalid CSRF token."}), 403
+
+    payload = request.get_json(silent=True)
+    if not isinstance(payload, dict):
+        return jsonify({"error": "Request body must be a JSON object."}), 400
+    career = payload.get("career")
+    done = payload.get("done", [])
+    if not career or not isinstance(done, list):
+        return jsonify({"error": "Missing 'career' or 'done'."}), 400
+
+    done = [str(x) for x in done][:200]  # sanitize + bound
+    with get_db() as db:
+        db.execute(
+            """
+            INSERT INTO progress (user_id, career_id, done_keys, updated_at)
+            VALUES (?, ?, ?, CURRENT_TIMESTAMP)
+            ON CONFLICT(user_id, career_id)
+            DO UPDATE SET done_keys = excluded.done_keys, updated_at = CURRENT_TIMESTAMP
+            """,
+            (user["id"], career, json.dumps(done)),
+        )
+    return jsonify({"ok": True, "count": len(done)})
 
 
 @app.route("/healthz")

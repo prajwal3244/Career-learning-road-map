@@ -9,6 +9,11 @@
 
   const state = { skills: [], careers: [], selectedCareer: null, roadmap: null, progressKey: null };
 
+  // When logged in, progress syncs to the account server-side; otherwise it
+  // falls back to this browser's localStorage.
+  const AUTHED = document.body.dataset.authed === "true";
+  const CSRF = document.body.dataset.csrf || "";
+
   // Each career is a transit "line" with its own colour (CSS custom props).
   const LINE_COLORS = {
     "data-analyst": "var(--l1)", "data-scientist": "var(--l2)", "ml-engineer": "var(--l3)",
@@ -260,9 +265,9 @@
     });
 
     initMeter();
-    loadProgress();
-    updateProgress();
     bindRoadmapActions();
+    updateProgress();
+    loadProgress().then(updateProgress);
   }
 
   function renderStop(stage) {
@@ -335,17 +340,34 @@
     if (ring) ring.style.strokeDashoffset = String(ringCircumference - (pct / 100) * ringCircumference);
   }
 
-  function saveProgress() {
-    if (!state.progressKey) return;
-    const done = $$(".stop:not(.stop--origin)").filter((s) => s.classList.contains("is-done")).map((s) => s.dataset.step);
-    store.set(state.progressKey, JSON.stringify(done));
+  function currentDoneKeys() {
+    return $$(".stop:not(.stop--origin)").filter((s) => s.classList.contains("is-done")).map((s) => s.dataset.step);
   }
 
-  function loadProgress() {
-    if (!state.progressKey) return;
+  function saveProgress() {
+    const done = currentDoneKeys();
+    if (AUTHED && state.roadmap) {
+      fetch("/api/progress", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-CSRFToken": CSRF },
+        body: JSON.stringify({ career: state.roadmap.career.id, done }),
+      }).catch(() => { /* offline / transient — progress is best-effort */ });
+    } else if (state.progressKey) {
+      store.set(state.progressKey, JSON.stringify(done));
+    }
+  }
+
+  async function loadProgress() {
     let done = [];
-    try { done = JSON.parse(store.get(state.progressKey) || "[]"); } catch { done = []; }
-    if (!Array.isArray(done)) done = [];
+    if (AUTHED && state.roadmap) {
+      try {
+        const res = await fetch(`/api/progress?career=${encodeURIComponent(state.roadmap.career.id)}`);
+        if (res.ok) { const d = await res.json(); if (Array.isArray(d.done)) done = d.done; }
+      } catch { /* fall through to empty */ }
+    } else if (state.progressKey) {
+      try { done = JSON.parse(store.get(state.progressKey) || "[]"); } catch { done = []; }
+      if (!Array.isArray(done)) done = [];
+    }
     $$(".stop:not(.stop--origin)").forEach((stopEl) => {
       if (done.includes(stopEl.dataset.step)) {
         stopEl.classList.add("is-done");
@@ -353,13 +375,14 @@
         if (cb) cb.checked = true;
       }
     });
-    saveProgress(); // prune ids that no longer exist in this route
+    if (!AUTHED) saveProgress(); // prune stale localStorage ids for guests
   }
 
   function bindRoadmapActions() {
     $("#reset-progress").onclick = () => {
-      if (state.progressKey) store.remove(state.progressKey);
       $$(".stop:not(.stop--origin)").forEach((s) => { s.classList.remove("is-done"); const cb = $(".stop__check input", s); if (cb) cb.checked = false; });
+      if (AUTHED) saveProgress();               // persist the now-empty set
+      else if (state.progressKey) store.remove(state.progressKey);
       updateProgress();
     };
     $("#print-btn").onclick = () => window.print();
