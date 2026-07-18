@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Flask / instance
+instance/
+.webassets-cache
+
+# Environment
+.env
+.env.*
+
+# Editors / OS
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Test artifacts
+server.log
+roadmap-result.png
+.playwright-mcp/
+
+# CI workflow (needs `workflow` OAuth scope to push; add via GitHub UI or gh auth refresh -s workflow)
+.github/

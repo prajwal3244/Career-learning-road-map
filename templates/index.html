@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="The Data & AI Transit — plan your career like a journey. A personalized learning route from where you are to the role you want." />
+  <title>The Data &amp; AI Transit · Career Route Planner</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:ital,wght@0,400..700;1,400&family=Hanken+Grotesk:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ccircle%20cx='50'%20cy='50'%20r='42'%20fill='none'%20stroke='%23e01e5a'%20stroke-width='14'/%3E%3Crect%20x='6'%20y='40'%20width='88'%20height='20'%20fill='%231b1b1f'/%3E%3C/svg%3E" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- Masthead -->
+  <header class="masthead">
+    <div class="wrap masthead__inner">
+      <a class="logo" href="#top" aria-label="The Data and AI Transit — home">
+        <span class="roundel roundel--brand" aria-hidden="true"><i></i></span>
+        <span class="logo__word">The&nbsp;Data&nbsp;&amp;&nbsp;AI&nbsp;Transit<span class="logo__sub">career route planner</span></span>
+      </a>
+      <nav class="masthead__nav" aria-label="Primary">
+        <a href="#careers">Lines</a>
+        <a href="#build">Plan journey</a>
+        <a href="#roadmap-section" id="nav-roadmap" class="is-hidden">Your route</a>
+      </nav>
+      <button id="theme-toggle" class="toggle" aria-label="Switch to night service (dark mode)" aria-pressed="false">
+        <span class="toggle__dot"></span><span class="toggle__label">Night</span>
+      </button>
+    </div>
+  </header>
+
+  <main id="main">
+    <span id="top"></span>
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="wrap hero__inner">
+        <p class="kicker"><span class="youarehere"></span> This service terminates at your dream role</p>
+        <h1 class="hero__title">Plan your career<br />like a <span class="hl">journey.</span></h1>
+        <div class="hero__grid">
+          <p class="hero__lede">
+            Tell us which stations you've already passed. Pick a destination. We'll plot the fastest
+            line from where you are now to the role you want — every stop a skill, every skill a
+            resource, a project, and hours on the clock.
+          </p>
+          <div class="hero__meta">
+            <div class="travelcard" aria-hidden="true">
+              <div class="travelcard__strip"></div>
+              <div class="travelcard__body">
+                <span class="travelcard__label">Career Travelcard</span>
+                <div class="travelcard__stats">
+                  <div><b id="stat-tracks">5</b><span>lines</span></div>
+                  <div><b id="stat-skills">10</b><span>stations</span></div>
+                  <div><b>30+</b><span>resources</span></div>
+                </div>
+              </div>
+            </div>
+            <a href="#build" class="btn btn--solid">Plan my journey →</a>
+          </div>
+        </div>
+      </div>
+      <!-- decorative transit lines -->
+      <svg class="hero__map" viewBox="0 0 1200 220" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M-20 40 H360 Q400 40 440 80 L560 200 Q600 240 660 200 H1220" fill="none" stroke="#e01e5a" stroke-width="8" stroke-linecap="round"/>
+        <path d="M-20 90 H240 Q300 90 340 130 H1220" fill="none" stroke="#0f8a6d" stroke-width="8" stroke-linecap="round"/>
+        <path d="M-20 150 H520 Q580 150 620 110 H1220" fill="none" stroke="#5b2a9e" stroke-width="8" stroke-linecap="round"/>
+        <path d="M-20 190 H700 Q760 190 800 150 H1220" fill="none" stroke="#1256c4" stroke-width="8" stroke-linecap="round"/>
+      </svg>
+    </section>
+
+    <div class="rule wrap"><span class="rule__no">A</span> The network — pick a line</div>
+
+    <!-- Careers / Lines -->
+    <section id="careers" class="section wrap">
+      <div id="careers-grid" class="lines"><!-- populated by JS --></div>
+    </section>
+
+    <div class="rule wrap"><span class="rule__no">B</span> Which stations have you passed?</div>
+
+    <!-- Builder -->
+    <section id="build" class="section wrap builder">
+      <div class="builder__col">
+        <h2 class="panel-h">Your ticket</h2>
+        <p class="panel-note">Slide each station to your current level. 0 = never boarded, 100 = you could drive the train.</p>
+        <div id="skills-form" class="gauges"><!-- sliders injected by JS --></div>
+      </div>
+      <aside class="builder__col builder__col--pick">
+        <h2 class="panel-h">Destination</h2>
+        <div id="career-select" class="manifest"><!-- options injected by JS --></div>
+        <button id="generate-btn" class="btn btn--solid btn--block" disabled>Plot my route →</button>
+        <p id="builder-error" class="err" role="alert" aria-live="assertive"></p>
+      </aside>
+    </section>
+
+    <!-- Roadmap -->
+    <section id="roadmap-section" class="section wrap is-hidden" aria-labelledby="roadmap-title">
+      <div class="rule rule--flush"><span class="rule__no">C</span> Your route</div>
+
+      <header class="route-head">
+        <h2 id="roadmap-title" class="route-head__title"></h2>
+        <p id="roadmap-tagline" class="route-head__tag"></p>
+      </header>
+
+      <div class="dash">
+        <div class="dash__stats" id="summary-cards"></div>
+        <div class="dash__gauge">
+          <div class="meter" role="img" aria-labelledby="progress-caption">
+            <svg viewBox="0 0 120 120" width="118" height="118">
+              <circle class="meter__bg" cx="60" cy="60" r="52" />
+              <circle class="meter__fg" cx="60" cy="60" r="52" id="ring-fg" />
+            </svg>
+            <div class="meter__num"><span id="progress-pct">0%</span></div>
+          </div>
+          <div class="dash__legend" aria-live="polite" aria-atomic="true">
+            <p id="progress-caption"><b id="progress-done">0</b> / <b id="progress-total">0</b> stops reached</p>
+            <button id="reset-progress" class="btn btn--ghost btn--sm">Reset journey</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="mastered" class="mastered is-hidden"></div>
+
+      <ol id="timeline" class="route"><!-- stations injected by JS --></ol>
+
+      <div class="route-actions">
+        <button id="print-btn" class="btn btn--ghost">Print / Save PDF</button>
+        <button id="restart-btn" class="btn btn--ghost">Re-plan</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="colophon">
+    <div class="wrap colophon__inner">
+      <span class="roundel roundel--brand" aria-hidden="true"><i></i></span>
+      <div>
+        <p>The Data &amp; AI Transit — a data-driven career route planner. Built with Flask &amp; vanilla JS.</p>
+        <p class="colophon__fine">
+          Mind the gap · a portfolio project by <a href="https://github.com/prajwal3244" target="_blank" rel="noopener">Prajwal</a> ·
+          <a href="https://github.com/prajwal3244/Career-learning-road-map" target="_blank" rel="noopener">source on GitHub</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

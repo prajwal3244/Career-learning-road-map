@@ -1,0 +1,331 @@
+{
+  "meta": {
+    "version": "2.0",
+    "title": "Data & AI Career Learning Roadmap",
+    "description": "A data-driven, personalized learning roadmap engine for Data & AI/ML careers."
+  },
+  "skills": [
+    { "id": "programming",      "name": "Programming (Python)",      "icon": "🐍", "description": "Writing clean, efficient code in Python." },
+    { "id": "math_stats",       "name": "Math & Statistics",         "icon": "📐", "description": "Probability, statistics, linear algebra and calculus." },
+    { "id": "sql_databases",    "name": "SQL & Databases",           "icon": "🗃️", "description": "Querying and modeling relational & NoSQL data." },
+    { "id": "data_wrangling",   "name": "Data Wrangling",            "icon": "🧹", "description": "Cleaning, transforming and preparing data with pandas." },
+    { "id": "data_viz",         "name": "Data Visualization",        "icon": "📊", "description": "Communicating insight with charts and dashboards." },
+    { "id": "machine_learning", "name": "Machine Learning",          "icon": "🤖", "description": "Supervised & unsupervised learning, model evaluation." },
+    { "id": "deep_learning",    "name": "Deep Learning",             "icon": "🧠", "description": "Neural networks, CNNs, transformers and LLMs." },
+    { "id": "llm_engineering",  "name": "GenAI & LLM Applications",  "icon": "✨", "description": "Prompting, RAG, agents and LLM evaluation." },
+    { "id": "mlops",            "name": "MLOps & Deployment",        "icon": "⚙️", "description": "Shipping, scaling and monitoring models in production." },
+    { "id": "data_engineering", "name": "Data Engineering",          "icon": "🏗️", "description": "Pipelines, warehousing and big-data tooling." }
+  ],
+  "careers": [
+    {
+      "id": "data-analyst",
+      "title": "Data Analyst",
+      "icon": "📈",
+      "tagline": "Turn raw data into decisions with SQL, dashboards and clear storytelling.",
+      "avg_salary_us": "$65k – $95k",
+      "avg_salary_in": "₹6 – 12 LPA",
+      "demand": "High",
+      "core_skills": ["programming", "math_stats", "sql_databases", "data_wrangling", "data_viz"],
+      "capstone": {
+        "title": "Analytics Capstone",
+        "summary": "Own an end-to-end analysis: source data, clean it, analyze it and present a decision.",
+        "hours": 40,
+        "steps": [
+          "Pick a domain dataset (sales, marketing, healthcare) and define 3 business questions.",
+          "Clean & model the data in SQL + pandas.",
+          "Build an interactive dashboard (Tableau / Power BI / Streamlit).",
+          "Write a one-page executive summary with a recommendation."
+        ],
+        "resources": [
+          { "title": "Google Data Analytics Professional Certificate", "url": "https://www.coursera.org/professional-certificates/google-data-analytics", "type": "Course", "cost": "Paid" },
+          { "title": "Maven Analytics – Data Playground", "url": "https://www.mavenanalytics.io/data-playground", "type": "Datasets", "cost": "Free" }
+        ]
+      }
+    },
+    {
+      "id": "data-scientist",
+      "title": "Data Scientist",
+      "icon": "🔬",
+      "tagline": "Combine statistics and machine learning to model the world and predict outcomes.",
+      "avg_salary_us": "$100k – $160k",
+      "avg_salary_in": "₹12 – 28 LPA",
+      "demand": "Very High",
+      "core_skills": ["programming", "math_stats", "sql_databases", "data_wrangling", "data_viz", "machine_learning"],
+      "capstone": {
+        "title": "Predictive Modeling Capstone",
+        "summary": "Frame a problem, build a model, and quantify its business impact.",
+        "hours": 60,
+        "steps": [
+          "Define a prediction target and success metric.",
+          "Perform EDA, feature engineering and baseline modeling.",
+          "Iterate with cross-validation and hyper-parameter tuning.",
+          "Explain the model (SHAP) and estimate its ROI in a report."
+        ],
+        "resources": [
+          { "title": "Kaggle Competitions", "url": "https://www.kaggle.com/competitions", "type": "Practice", "cost": "Free" },
+          { "title": "StatQuest with Josh Starmer", "url": "https://www.youtube.com/@statquest", "type": "Video", "cost": "Free" }
+        ]
+      }
+    },
+    {
+      "id": "ml-engineer",
+      "title": "Machine Learning Engineer",
+      "icon": "⚙️",
+      "tagline": "Build, deploy and scale ML systems that run reliably in production.",
+      "avg_salary_us": "$120k – $190k",
+      "avg_salary_in": "₹15 – 35 LPA",
+      "demand": "Very High",
+      "core_skills": ["programming", "math_stats", "sql_databases", "data_wrangling", "machine_learning", "deep_learning", "mlops"],
+      "capstone": {
+        "title": "Production ML Service",
+        "summary": "Ship a model behind an API with monitoring and CI/CD.",
+        "hours": 70,
+        "steps": [
+          "Train a model and package it (Docker).",
+          "Serve it via FastAPI with input validation.",
+          "Add experiment tracking (MLflow / Weights & Biases).",
+          "Set up CI/CD, monitoring and automated retraining triggers."
+        ],
+        "resources": [
+          { "title": "Made With ML – MLOps Course", "url": "https://madewithml.com/", "type": "Course", "cost": "Free" },
+          { "title": "Full Stack Deep Learning", "url": "https://fullstackdeeplearning.com/course/", "type": "Course", "cost": "Free" }
+        ]
+      }
+    },
+    {
+      "id": "ai-engineer",
+      "title": "AI / LLM Engineer",
+      "icon": "🧠",
+      "tagline": "Build applications on top of foundation models: RAG, agents and fine-tuning.",
+      "avg_salary_us": "$130k – $210k",
+      "avg_salary_in": "₹18 – 40 LPA",
+      "demand": "Explosive",
+      "core_skills": ["programming", "math_stats", "data_wrangling", "machine_learning", "deep_learning", "llm_engineering", "mlops"],
+      "capstone": {
+        "title": "LLM-Powered Application",
+        "summary": "Build a real product on top of an LLM with retrieval and evaluation.",
+        "hours": 55,
+        "steps": [
+          "Design a RAG pipeline over a private knowledge base.",
+          "Add tool-calling / an agentic workflow.",
+          "Build an evaluation harness (groundedness, relevance).",
+          "Deploy with cost, latency and safety guardrails."
+        ],
+        "resources": [
+          { "title": "DeepLearning.AI – Short Courses", "url": "https://www.deeplearning.ai/short-courses/", "type": "Course", "cost": "Free" },
+          { "title": "Hugging Face LLM Course", "url": "https://huggingface.co/learn/llm-course", "type": "Course", "cost": "Free" }
+        ]
+      }
+    },
+    {
+      "id": "data-engineer",
+      "title": "Data Engineer",
+      "icon": "🏗️",
+      "tagline": "Build the pipelines and platforms every data team depends on.",
+      "avg_salary_us": "$110k – $175k",
+      "avg_salary_in": "₹12 – 30 LPA",
+      "demand": "Very High",
+      "core_skills": ["programming", "sql_databases", "data_wrangling", "data_engineering"],
+      "capstone": {
+        "title": "End-to-End Data Pipeline",
+        "summary": "Move data from source to warehouse to dashboard, on a schedule.",
+        "hours": 60,
+        "steps": [
+          "Ingest from an API/stream into a data lake.",
+          "Transform with dbt into a star schema.",
+          "Orchestrate with Airflow / Dagster.",
+          "Add data-quality tests and a serving layer."
+        ],
+        "resources": [
+          { "title": "DataTalksClub – Data Engineering Zoomcamp", "url": "https://github.com/DataTalksClub/data-engineering-zoomcamp", "type": "Course", "cost": "Free" },
+          { "title": "dbt Fundamentals", "url": "https://learn.getdbt.com/", "type": "Course", "cost": "Free" }
+        ]
+      }
+    }
+  ],
+  "modules": {
+    "programming": {
+      "threshold": 60,
+      "title": "Programming Fundamentals with Python",
+      "why": "Python is the lingua franca of data & AI. Everything downstream builds on it.",
+      "hours": 40,
+      "objectives": [
+        "Master syntax, data structures, functions and OOP basics.",
+        "Get comfortable with virtual environments, pip and Git.",
+        "Learn NumPy for vectorized computation."
+      ],
+      "resources": [
+        { "title": "Python for Everybody (Coursera)", "url": "https://www.coursera.org/specializations/python", "type": "Course", "cost": "Free audit" },
+        { "title": "freeCodeCamp – Scientific Computing with Python", "url": "https://www.freecodecamp.org/learn/scientific-computing-with-python/", "type": "Course", "cost": "Free" },
+        { "title": "Automate the Boring Stuff", "url": "https://automatetheboringstuff.com/", "type": "Book", "cost": "Free" }
+      ],
+      "project": "Build a CLI tool that fetches an open API and saves cleaned results to CSV."
+    },
+    "math_stats": {
+      "threshold": 55,
+      "title": "Math & Statistics for Data Science",
+      "why": "Statistics is how you separate signal from noise and reason under uncertainty.",
+      "hours": 45,
+      "objectives": [
+        "Descriptive & inferential statistics, hypothesis testing.",
+        "Probability distributions and Bayesian intuition.",
+        "Linear algebra and calculus foundations for ML."
+      ],
+      "resources": [
+        { "title": "Khan Academy – Statistics & Probability", "url": "https://www.khanacademy.org/math/statistics-probability", "type": "Course", "cost": "Free" },
+        { "title": "3Blue1Brown – Essence of Linear Algebra", "url": "https://www.3blue1brown.com/topics/linear-algebra", "type": "Video", "cost": "Free" },
+        { "title": "StatQuest – Statistics Fundamentals", "url": "https://www.youtube.com/playlist?list=PLblh5JKOoLUK0FLuzwntyYI10UQFUhsY9", "type": "Video", "cost": "Free" }
+      ],
+      "project": "Run an A/B test analysis on a public dataset and report significance."
+    },
+    "sql_databases": {
+      "threshold": 60,
+      "title": "SQL & Databases",
+      "why": "Most real-world data lives in databases. SQL is non-negotiable for data roles.",
+      "hours": 30,
+      "objectives": [
+        "SELECT, JOINs, aggregations, window functions and CTEs.",
+        "Data modeling: normalization, keys, indexes.",
+        "Relational vs. NoSQL trade-offs."
+      ],
+      "resources": [
+        { "title": "SQLBolt – Interactive SQL", "url": "https://sqlbolt.com/", "type": "Interactive", "cost": "Free" },
+        { "title": "ThoughtSpot SQL Tutorial (formerly Mode)", "url": "https://www.thoughtspot.com/sql-tutorial", "type": "Tutorial", "cost": "Free" },
+        { "title": "DataLemur – SQL Interview Questions", "url": "https://datalemur.com/questions", "type": "Practice", "cost": "Free" }
+      ],
+      "project": "Model and query a mock e-commerce database answering 10 business questions."
+    },
+    "data_wrangling": {
+      "threshold": 60,
+      "title": "Data Wrangling with pandas",
+      "why": "80% of data work is cleaning and shaping data. Do it well and fast.",
+      "hours": 30,
+      "objectives": [
+        "pandas: indexing, groupby, merge, pivot, apply.",
+        "Handling missing data, outliers and types.",
+        "Feature engineering fundamentals."
+      ],
+      "resources": [
+        { "title": "Kaggle – Pandas Course", "url": "https://www.kaggle.com/learn/pandas", "type": "Course", "cost": "Free" },
+        { "title": "Kaggle – Data Cleaning", "url": "https://www.kaggle.com/learn/data-cleaning", "type": "Course", "cost": "Free" }
+      ],
+      "project": "Take a messy real-world CSV and produce a clean, analysis-ready dataset with a documented notebook."
+    },
+    "data_viz": {
+      "threshold": 65,
+      "title": "Data Visualization & Storytelling",
+      "why": "Insight nobody understands is worthless. Visualization is how you persuade.",
+      "hours": 25,
+      "objectives": [
+        "Choose the right chart for the question.",
+        "Matplotlib/Seaborn/Plotly and a BI tool (Tableau or Power BI).",
+        "Dashboard design and narrative structure."
+      ],
+      "resources": [
+        { "title": "Kaggle – Data Visualization", "url": "https://www.kaggle.com/learn/data-visualization", "type": "Course", "cost": "Free" },
+        { "title": "Storytelling with Data", "url": "https://www.storytellingwithdata.com/", "type": "Book/Blog", "cost": "Free blog" },
+        { "title": "Tableau Free Training Videos", "url": "https://www.tableau.com/learn/training", "type": "Video", "cost": "Free" }
+      ],
+      "project": "Build an interactive dashboard that answers a stakeholder question at a glance."
+    },
+    "machine_learning": {
+      "threshold": 60,
+      "title": "Machine Learning",
+      "why": "The core skill for prediction: how machines learn patterns from data.",
+      "hours": 55,
+      "objectives": [
+        "Supervised (regression, classification) & unsupervised learning.",
+        "Model selection, cross-validation, metrics and regularization.",
+        "scikit-learn end-to-end workflows and pipelines."
+      ],
+      "resources": [
+        { "title": "Andrew Ng – Machine Learning Specialization", "url": "https://www.coursera.org/specializations/machine-learning-introduction", "type": "Course", "cost": "Free audit" },
+        { "title": "Google – Machine Learning Crash Course", "url": "https://developers.google.com/machine-learning/crash-course", "type": "Course", "cost": "Free" },
+        { "title": "Hands-On ML (book, code notebooks)", "url": "https://github.com/ageron/handson-ml3", "type": "Book/Code", "cost": "Free code" }
+      ],
+      "project": "Enter a Kaggle competition and land a submission above the baseline benchmark."
+    },
+    "deep_learning": {
+      "threshold": 65,
+      "title": "Deep Learning & Neural Networks",
+      "why": "Powers modern vision, NLP and generative AI – including LLMs.",
+      "hours": 60,
+      "objectives": [
+        "Neural nets, backprop, optimizers and regularization.",
+        "CNNs, RNNs and the Transformer architecture.",
+        "PyTorch (or TensorFlow) for building and training models."
+      ],
+      "resources": [
+        { "title": "fast.ai – Practical Deep Learning", "url": "https://course.fast.ai/", "type": "Course", "cost": "Free" },
+        { "title": "DeepLearning.AI – Deep Learning Specialization", "url": "https://www.coursera.org/specializations/deep-learning", "type": "Course", "cost": "Free audit" },
+        { "title": "Karpathy – Neural Networks: Zero to Hero", "url": "https://karpathy.ai/zero-to-hero.html", "type": "Video", "cost": "Free" }
+      ],
+      "project": "Fine-tune a pretrained model on a custom dataset and deploy an inference demo."
+    },
+    "llm_engineering": {
+      "threshold": 60,
+      "title": "GenAI & LLM Application Engineering",
+      "why": "The skills that define an AI/LLM Engineer: building real products on top of foundation models.",
+      "hours": 45,
+      "objectives": [
+        "Prompt engineering, structured outputs and tool/function calling.",
+        "Retrieval-Augmented Generation (RAG) with vector databases.",
+        "Agents, orchestration, and LLM evaluation/guardrails (groundedness, safety, cost)."
+      ],
+      "resources": [
+        { "title": "DeepLearning.AI – Short Courses (RAG, agents, evals)", "url": "https://www.deeplearning.ai/short-courses/", "type": "Course", "cost": "Free" },
+        { "title": "Hugging Face – LLM Course", "url": "https://huggingface.co/learn/llm-course", "type": "Course", "cost": "Free" },
+        { "title": "Anthropic – Prompt Engineering Guide", "url": "https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview", "type": "Guide", "cost": "Free" }
+      ],
+      "project": "Build a RAG chatbot over your own documents with an evaluation harness for groundedness and relevance."
+    },
+    "mlops": {
+      "threshold": 65,
+      "title": "MLOps & Model Deployment",
+      "why": "A model in a notebook helps no one. MLOps gets it to real users, reliably.",
+      "hours": 45,
+      "objectives": [
+        "Packaging (Docker), serving (FastAPI) and cloud basics.",
+        "Experiment tracking, model registries and CI/CD.",
+        "Monitoring, drift detection and retraining."
+      ],
+      "resources": [
+        { "title": "Made With ML – MLOps", "url": "https://madewithml.com/", "type": "Course", "cost": "Free" },
+        { "title": "DataTalksClub – MLOps Zoomcamp", "url": "https://github.com/DataTalksClub/mlops-zoomcamp", "type": "Course", "cost": "Free" }
+      ],
+      "project": "Take one of your models, containerize it, serve it via an API and add monitoring."
+    },
+    "data_engineering": {
+      "threshold": 65,
+      "title": "Data Engineering & Pipelines",
+      "why": "The plumbing that makes analytics and ML possible at scale.",
+      "hours": 50,
+      "objectives": [
+        "Batch & streaming pipelines, ETL vs. ELT.",
+        "Data warehouses, dbt transformations and orchestration.",
+        "Spark and cloud data platforms."
+      ],
+      "resources": [
+        { "title": "Data Engineering Zoomcamp", "url": "https://github.com/DataTalksClub/data-engineering-zoomcamp", "type": "Course", "cost": "Free" },
+        { "title": "The Data Engineering Cookbook", "url": "https://github.com/andkret/Cookbook", "type": "Guide", "cost": "Free" }
+      ],
+      "project": "Build a scheduled pipeline that ingests, transforms and serves a public dataset."
+    }
+  },
+  "closing_stage": {
+    "title": "Land the Role: Portfolio & Interview Prep",
+    "why": "Skills get you interviews; a portfolio and prep get you offers.",
+    "hours": 30,
+    "objectives": [
+      "Publish 2–3 polished projects on GitHub with strong READMEs.",
+      "Write about your work (blog / LinkedIn) to build credibility.",
+      "Practice technical + behavioral interviews; refine your resume."
+    ],
+    "resources": [
+      { "title": "GitHub – host your portfolio", "url": "https://github.com/", "type": "Platform", "cost": "Free" },
+      { "title": "Kaggle – datasets & notebooks", "url": "https://www.kaggle.com/", "type": "Platform", "cost": "Free" },
+      { "title": "Tech Interview Handbook", "url": "https://www.techinterviewhandbook.org/", "type": "Guide", "cost": "Free" }
+    ],
+    "project": "Assemble a portfolio site linking your best projects, resume and writing."
+  }
+}
